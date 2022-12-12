@@ -1,0 +1,102 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1-create-tables
+      author: Yan
+      changes:
+        - createTable:
+            tableName: account
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: account_number
+                  type: bigint
+        - createTable:
+            tableName: expense_limit
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: sum
+                  type: decimal(13,2)
+              - column:
+                  name: currency_shortname
+                  type: varchar(3)
+              - column:
+                  name: datetime
+                  type: timestamp
+              - column:
+                  name: expense_category
+                  type: varchar(10)
+              - column:
+                  name: account_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: account_expense_limit_fk
+                    referencedTableName: account
+                    referencedColumnNames: id
+        - createTable:
+            tableName: transaction
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: sum
+                  type: decimal(13,2)
+              - column:
+                  name: currency_shortname
+                  type: varchar(3)
+              - column:
+                  name: datetime
+                  type: timestamp
+              - column:
+                  name: expense_category
+                  type: varchar(10)
+              - column:
+                  name: account_from_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: account_from_transaction_fk
+                    referencedTableName: account
+                    referencedColumnNames: id
+              - column:
+                  name: account_to_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: account_to_transaction_fk
+                    referencedTableName: account
+                    referencedColumnNames: id
+              - column:
+                  name: limit_exceeded
+                  type: boolean
+        - createTable:
+            tableName: kzt_usd
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: exchange_rate
+                  type: decimal(5,10)
+              - column:
+                  name: datetime
+                  type: timestamp
