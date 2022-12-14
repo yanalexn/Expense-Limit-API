@@ -1,27 +1,30 @@
 package com.yanalexn.expense_limit_api.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.io.Serializable;
+import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-public class Account {
-
+public class Account {//todo: could add serial version uid https://stackoverflow.com/questions/24573643/how-to-generate-serial-version-uid-in-intellij
+//todo: could add validation
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    Long id;//todo: someday you can create uuid https://medium.com/@memredemir/creating-a-graphql-mysql-and-spring-boot-backend-service-32cec95f4436
 
-    @Pattern(regexp = "\\d{10}")
     Long accountNumber;
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JoinColumn(name = "account_id")//тогда у orderr будет автоматически создаваться fk
+    private List<Transaction> orders;
 }

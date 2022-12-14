@@ -1,0 +1,26 @@
+type Transaction {
+    id: ID!
+    sum: Float
+    currencyShortname: String
+    datetime: String
+    expenseCategory: String
+    accountFrom: Account
+    accountTo: Account
+    limitExceeded: Boolean
+    limitRemaining: Float
+}
+
+type Query {
+    findTransaction(id: ID! ): Transaction!
+}
+
+type Mutation {
+    createTransaction(
+        sum: Float!,
+        currencyShortname: String!,
+        datetime: String!,
+        expenseCategory: String!,
+        accountFromNumber: Float!,
+        accountToNumber: Float!
+    ): Transaction!
+}

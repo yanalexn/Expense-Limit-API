@@ -1,13 +1,13 @@
 package com.yanalexn.expense_limit_api.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import javax.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -23,5 +23,5 @@ public class KztUsd {
 
     Double exchangeRate;
 
-    LocalDate datetime;//todo: LocalDate???+Timezone
+    OffsetDateTime datetime;
 }

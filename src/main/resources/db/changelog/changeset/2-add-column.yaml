@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2-add-column
+      author: Yan
+      changes:
+        - addColumn:
+            tableName: transaction
+            columns:
+              - column:
+                  name: limit_remaining
+                  type: decimal(13,2)

@@ -96,7 +96,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: exchange_rate
-                  type: decimal(5,10)
+                  type: decimal(20,10)
               - column:
                   name: datetime
                   type: timestamp

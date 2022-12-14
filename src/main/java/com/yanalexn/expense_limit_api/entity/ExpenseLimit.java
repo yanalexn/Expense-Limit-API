@@ -1,10 +1,11 @@
 package com.yanalexn.expense_limit_api.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -22,7 +23,7 @@ public class ExpenseLimit {
 
     String currencyShortname;
 
-    LocalDate dateTime;//todo: LocalDate???+Timezone
+    OffsetDateTime datetime;
 
     String expenseCategory;
 

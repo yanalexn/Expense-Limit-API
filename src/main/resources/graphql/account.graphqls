@@ -1,0 +1,8 @@
+type Account {
+    id: ID!
+    accountNumber: Float
+}
+
+extend type Query {
+    findAccount(id: ID!): Account!
+}

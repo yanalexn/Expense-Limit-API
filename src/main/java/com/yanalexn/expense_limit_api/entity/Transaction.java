@@ -1,16 +1,17 @@
 package com.yanalexn.expense_limit_api.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level= AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class Transaction {
 
@@ -20,17 +21,21 @@ public class Transaction {
 
     Double sum;
 
-    String currency_shortname;
+    String currencyShortname;
 
-    LocalDate dateTime;//todo: LocalDate???+Timezone
+    OffsetDateTime datetime;
 
     String expenseCategory;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    Account account_from;
+    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "account_from_id")
+    Account accountFrom;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    Account account_to;
+    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "account_to_id")
+    Account accountTo;
 
     Boolean limitExceeded;
+
+    Double limitRemaining;
 }
