@@ -22,9 +22,9 @@ public class Account {//todo: could add serial version uid https://stackoverflow
 
     Long accountNumber;
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
-    @JoinColumn(name = "account_id")//тогда у orderr будет автоматически создаваться fk
-    private List<Transaction> orders;
+//    @OneToMany(
+//            cascade = CascadeType.ALL,
+//            orphanRemoval = true)
+//    @JoinColumn(name = "account_to_id")//тогда у orderr будет автоматически создаваться fk
+//    private List<Transaction> orders;
 }
