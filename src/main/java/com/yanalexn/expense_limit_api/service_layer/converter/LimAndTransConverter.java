@@ -1,7 +1,5 @@
 package com.yanalexn.expense_limit_api.service_layer.converter;
 
-import com.yanalexn.expense_limit_api.data_layer.entity.Account;
-import com.yanalexn.expense_limit_api.data_layer.entity.Transaction;
 import com.yanalexn.expense_limit_api.data_layer.repository.AccountRepository;
 import com.yanalexn.expense_limit_api.service_layer.dto.ExpenseLimitDto;
 import com.yanalexn.expense_limit_api.service_layer.dto.TransactionDto;
@@ -10,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.TimeZone;
 
 @Slf4j
 public class LimAndTransConverter {

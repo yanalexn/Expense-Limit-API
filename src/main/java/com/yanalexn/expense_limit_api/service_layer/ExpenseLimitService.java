@@ -4,21 +4,21 @@ import com.yanalexn.expense_limit_api.data_layer.entity.Account;
 import com.yanalexn.expense_limit_api.data_layer.entity.ExpenseLimit;
 import com.yanalexn.expense_limit_api.data_layer.repository.AccountRepository;
 import com.yanalexn.expense_limit_api.data_layer.repository.ExpenseLimitRepository;
+import com.yanalexn.expense_limit_api.service_layer.converter.ExpenseLimitInputConverter;
 import com.yanalexn.expense_limit_api.service_layer.converter.LimAndTransConverter;
 import com.yanalexn.expense_limit_api.service_layer.dto.ExpenseLimitDto;
+import com.yanalexn.expense_limit_api.service_layer.dto.ExpenseLimitInput;
 import com.yanalexn.expense_limit_api.service_layer.dto.LimAndTransDto;
 import com.yanalexn.expense_limit_api.service_layer.dto.TransactionDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.OffsetDateTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @Service
 public class ExpenseLimitService {
 
@@ -31,22 +31,23 @@ public class ExpenseLimitService {
         this.accountRepository = accountRepository;
     }
 
-    public ExpenseLimit saveExpenseLimit(ExpenseLimit limit) {
+    public ExpenseLimit saveExpenseLimit(ExpenseLimitInput input) {
+
+        ExpenseLimit limit = ExpenseLimitInputConverter.inputToExpenseLimit(input);
         limit.setDatetime(OffsetDateTime.now());
+        limit.setAccount(accountRepository.findByAccountNumber(input.getAccountNumber()));
+
         return limitRepository.save(limit);
     }
 
-    public Optional<ExpenseLimit> findLast(Account account, String category) {
+    public List<LimAndTransDto> findLimAndTransList(Long accountNumber) {
 
-        List<ExpenseLimit> limits = limitRepository.findPrevExpLimits(account, category,
-                PageRequest.of(0, 1));
-
-        return limits.isEmpty() ? Optional.empty() : Optional.of(limits.get(0));
-    }
-
-    public List<LimAndTransDto> findLimAndTransList(Long accountId){
+        Long accountId = accountRepository.findByAccountNumber(accountNumber).getAccountNumber();
 
         List<Object[]> limAndTransList = limitRepository.findLimAndTransList(accountId);
+
+        log.error("findLimAndTransList: {}", limAndTransList);
+
         List<LimAndTransDto> limAndTransDtoList = new ArrayList<>();
 
         for (Object[] limAndTrans : limAndTransList) {
@@ -63,5 +64,26 @@ public class ExpenseLimitService {
         }
 
         return limAndTransDtoList;
+    }
+
+    public ExpenseLimit ifThereIsNoLimitThisMonthCreateIt(String category, Account account) {
+
+//        log.error("!find last lim this month: {}", limitRepository.findLastLimThisMonth(category, account.getId()).get());
+
+        return limitRepository.findLastLimThisMonth(category, account.getId())
+                .orElseGet(() ->
+                        limitRepository.save(
+                                ExpenseLimit.builder()
+                                        .sum(0.)
+                                        .currencyShortname("USD")
+                                        .datetime(OffsetDateTime.of(
+                                                YearMonth.now().atDay(1),
+                                                LocalTime.MIN,
+                                                ZoneOffset.ofHours(6)))
+                                        .expenseCategory(category)
+                                        .account(account)
+                                        .build()
+                        )
+                );
     }
 }

@@ -26,6 +26,6 @@ public class ExpenseLimit {
 
     String expenseCategory;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     Account account;
 }

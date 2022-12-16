@@ -28,11 +28,9 @@ public class Transaction {
     String expenseCategory;
 
     @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "account_from_id")
     Account accountFrom;
 
     @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "account_to_id")
     Account accountTo;
 
     Boolean limitExceeded;

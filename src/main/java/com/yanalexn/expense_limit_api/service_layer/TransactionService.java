@@ -1,19 +1,19 @@
 package com.yanalexn.expense_limit_api.service_layer;
 
 import com.yanalexn.expense_limit_api.data_layer.entity.Account;
+import com.yanalexn.expense_limit_api.data_layer.entity.ExpenseLimit;
 import com.yanalexn.expense_limit_api.data_layer.entity.Transaction;
 import com.yanalexn.expense_limit_api.data_layer.repository.AccountRepository;
-import com.yanalexn.expense_limit_api.data_layer.repository.ExpenseLimitRepository;
 import com.yanalexn.expense_limit_api.data_layer.repository.TransactionRepository;
 import com.yanalexn.expense_limit_api.service_layer.converter.OffsetDateTimeConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.time.YearMonth;
+import java.time.ZoneOffset;
 
 @Slf4j
 @Service
@@ -21,18 +21,18 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
-    private final ExpenseLimitRepository limitRepository;
     private final ExpenseLimitService limitService;
+    private final KztUsdService kztUsdService;
 
     @Autowired
     public TransactionService(TransactionRepository transactionRepository,
                               AccountRepository accountRepository,
-                              ExpenseLimitRepository limitRepository,
-                              ExpenseLimitService limitService) {
+                              ExpenseLimitService limitService,
+                              KztUsdService kztUsdService) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
-        this.limitRepository = limitRepository;
         this.limitService = limitService;
+        this.kztUsdService = kztUsdService;
     }
 
     public Transaction createTransaction(Double sum, String currencyShortname, String datetime,
@@ -51,47 +51,47 @@ public class TransactionService {
                 .accountTo(accountTo)
                 .build();
 
-        setLimitExceededAndRemaining(transaction);
+        setLimitRemaining(transaction);
+        setLimitExceeded(transaction);
 
         return transactionRepository.save(transaction);
     }
 
-    private void setLimitExceededAndRemaining(Transaction transaction) {
+    private void setLimitRemaining(Transaction transaction) {
 
-        Long accountFromId = transaction.getAccountFrom().getId();
-        Account accountFrom = transaction.getAccountFrom();
-        String category = transaction.getExpenseCategory();
-        double sum = transaction.getSum();
+        Transaction lastTransaction = transactionRepository.findLastThisMonth(
+                transaction.getExpenseCategory(),
+                transaction.getAccountFrom().getId()
+        ).orElseGet(() -> Transaction.builder()
+                .limitRemaining(0.)
+                .datetime(OffsetDateTime.of(
+                        YearMonth.now().atDay(1),
+                        LocalTime.MIN,
+                        ZoneOffset.ofHours(6)))
+                .build());
 
-//        Optional<Transaction> prevTransaction = transactionRepository.findLast(accountFrom, category);
-        Optional<Transaction> prevTransaction = findLast(accountFrom, category);
+        log.error("LAST TRANSACTION WHO ARE YOU: {}", lastTransaction);
 
-//        log.error("previous transaction + {} + {} + {}", prevTransaction.get().getId(),
-//                prevTransaction.get().getLimitRemaining(), prevTransaction.get().getLimitExceeded());
+        ExpenseLimit limit = limitService.ifThereIsNoLimitThisMonthCreateIt(
+                transaction.getExpenseCategory(), transaction.getAccountFrom());
 
-//        prevTransaction.ifPresentOrElse(
-//                prev -> transaction.setLimitRemaining(
-//                        prev.getLimitRemaining() - sum),
-//                () -> limitRepository.findLast(accountFromId, category).ifPresentOrElse(
-//                        limit -> transaction.setLimitRemaining(limit.getSum() - sum),
-//                        () -> transaction.setLimitRemaining(-sum))
-//        );
-        prevTransaction.ifPresentOrElse(
-                prev -> transaction.setLimitRemaining(
-                        prev.getLimitRemaining() - sum),
-                () -> limitService.findLast(accountFrom, category).ifPresentOrElse(
-                        limit -> transaction.setLimitRemaining(limit.getSum() - sum),
-                        () -> transaction.setLimitRemaining(-sum))
-        );
+        double exchangeRateIfKzt =
+                transaction.getCurrencyShortname().equals("KZT") ? kztUsdService.findToday() : 1;
 
-        transaction.setLimitExceeded(transaction.getLimitRemaining() < 0);
+        double limitSumIfLimitLaterThanLastTrans =
+                limit.getDatetime().compareTo(lastTransaction.getDatetime()) >= 0 ? limit.getSum() : 0.;
+
+        log.error("limitSumIfLimitLaterThanLastTrans: {}", limitSumIfLimitLaterThanLastTrans);
+        log.error("compare dates: {}", limit.getDatetime().compareTo(lastTransaction.getDatetime()));
+
+        double limitRemaining = limitSumIfLimitLaterThanLastTrans + lastTransaction.getLimitRemaining()
+                - transaction.getSum() * exchangeRateIfKzt;
+
+        transaction.setLimitRemaining(limitRemaining);
     }
 
-    public Optional<Transaction> findLast(Account account, String category) {
-
-        List<Transaction> transactions = transactionRepository.findPrevTransactions(account, category,
-                PageRequest.of(0, 1));
-
-        return transactions.isEmpty() ? Optional.empty() : Optional.of(transactions.get(0));
+    private void setLimitExceeded(Transaction transaction) {
+        boolean limitExceeded = transaction.getLimitRemaining() < 0;
+        transaction.setLimitExceeded(limitExceeded);
     }
 }
