@@ -6,11 +6,13 @@ import com.yanalexn.expense_limit_api.entity.Transaction;
 import com.yanalexn.expense_limit_api.repository.AccountRepository;
 import com.yanalexn.expense_limit_api.repository.ExpenseLimitRepository;
 import com.yanalexn.expense_limit_api.repository.TransactionRepository;
+import com.yanalexn.expense_limit_api.service.ExpenseLimitService;
 import com.yanalexn.expense_limit_api.service.OffsetDateTimeConverter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.OffsetDateTime;
@@ -19,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@ComponentScan("com.yanalexn.expense_limit_api.service")
 public class ExpenseLimitRepoTest {
 
     @Autowired
@@ -26,6 +29,9 @@ public class ExpenseLimitRepoTest {
 
     @Autowired
     ExpenseLimitRepository limitRepository;
+
+    @Autowired
+    ExpenseLimitService limitService;
 
     @Test
     public void findLast() {
@@ -49,6 +55,7 @@ public class ExpenseLimitRepoTest {
         limitRepository.save(firstLimit);
         limitRepository.save(lastLimit);
 
-        assertEquals(lastLimit, limitRepository.findLast(1L, "service").orElseThrow());
+//        assertEquals(lastLimit, limitRepository.findLast(1L, "service").orElseThrow());
+        assertEquals(lastLimit, limitService.findLast(account, "service").orElseThrow());
     }
 }

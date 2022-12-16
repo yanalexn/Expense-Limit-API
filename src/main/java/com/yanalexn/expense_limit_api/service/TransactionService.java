@@ -21,14 +21,17 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
     private final ExpenseLimitRepository limitRepository;
+    private final ExpenseLimitService limitService;
 
     @Autowired
     public TransactionService(TransactionRepository transactionRepository,
                               AccountRepository accountRepository,
-                              ExpenseLimitRepository limitRepository) {
+                              ExpenseLimitRepository limitRepository,
+                              ExpenseLimitService limitService) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
         this.limitRepository = limitRepository;
+        this.limitService = limitService;
     }
 
     public Transaction createTransaction(Double sum, String currencyShortname, String datetime,
@@ -65,10 +68,17 @@ public class TransactionService {
 //        log.error("previous transaction + {} + {} + {}", prevTransaction.get().getId(),
 //                prevTransaction.get().getLimitRemaining(), prevTransaction.get().getLimitExceeded());
 
+//        prevTransaction.ifPresentOrElse(
+//                prev -> transaction.setLimitRemaining(
+//                        prev.getLimitRemaining() - sum),
+//                () -> limitRepository.findLast(accountFromId, category).ifPresentOrElse(
+//                        limit -> transaction.setLimitRemaining(limit.getSum() - sum),
+//                        () -> transaction.setLimitRemaining(-sum))
+//        );
         prevTransaction.ifPresentOrElse(
                 prev -> transaction.setLimitRemaining(
                         prev.getLimitRemaining() - sum),
-                () -> limitRepository.findLast(accountFromId, category).ifPresentOrElse(
+                () -> limitService.findLast(accountFrom, category).ifPresentOrElse(
                         limit -> transaction.setLimitRemaining(limit.getSum() - sum),
                         () -> transaction.setLimitRemaining(-sum))
         );
