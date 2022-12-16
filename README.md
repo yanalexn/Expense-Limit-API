@@ -1,7 +1,7 @@
 
 # Expense Limit API
 
-This is a test task for Salva.kz. The aim is to write an API 
+This is a test task for Solva.kz. The aim is to write an API 
 that receives client transactions and gives back an information
 about client's exceeded limits and transactions.
 
