@@ -1,13 +1,12 @@
-package com.yanalexn.expense_limit_api.repository;
+package com.yanalexn.expense_limit_api.data_layer.repository;
 
-import com.yanalexn.expense_limit_api.entity.Account;
-import com.yanalexn.expense_limit_api.entity.Transaction;
+import com.yanalexn.expense_limit_api.data_layer.entity.Transaction;
+import com.yanalexn.expense_limit_api.data_layer.entity.Account;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 

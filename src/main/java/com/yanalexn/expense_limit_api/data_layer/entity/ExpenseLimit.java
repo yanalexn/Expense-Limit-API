@@ -1,10 +1,9 @@
-package com.yanalexn.expense_limit_api.entity;
+package com.yanalexn.expense_limit_api.data_layer.entity;
 
 import javax.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 @Data

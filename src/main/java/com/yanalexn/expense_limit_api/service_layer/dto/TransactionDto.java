@@ -1,5 +1,6 @@
-package com.yanalexn.expense_limit_api.service.dto;
+package com.yanalexn.expense_limit_api.service_layer.dto;
 
+import com.yanalexn.expense_limit_api.data_layer.entity.Account;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,12 +17,10 @@ public class TransactionDto implements Serializable {
     private Long id;
     private Double sum;
     private String currencyShortname;
-    private OffsetDateTime datetime;
+    private String datetime;
     private String expenseCategory;
-    private Long accountFromId;
-    private Long accountFromAccountNumber;
-    private Long accountToId;
-    private Long accountToAccountNumber;
+    private Long accountFromNumber;
+    private Long accountToNumber;
     private Boolean limitExceeded;
     private Double limitRemaining;
 }

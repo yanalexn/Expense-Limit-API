@@ -1,13 +1,12 @@
-package com.yanalexn.expense_limit_api.repository;
+package com.yanalexn.expense_limit_api.data_layer.repository;
 
-import com.yanalexn.expense_limit_api.entity.Account;
-import com.yanalexn.expense_limit_api.entity.ExpenseLimit;
+import com.yanalexn.expense_limit_api.data_layer.entity.Account;
+import com.yanalexn.expense_limit_api.data_layer.entity.ExpenseLimit;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ExpenseLimitRepository extends JpaRepository<ExpenseLimit, Long> {
 
@@ -82,5 +81,5 @@ public interface ExpenseLimitRepository extends JpaRepository<ExpenseLimit, Long
             "    ) IS NULL) " +
             "WHERE t.limit_exceeded = TRUE AND e.account_id = :accountId AND t.account_from_id = :accountId "
     , nativeQuery = true)
-    List<Object[]> findLimsAndTrans(Long accountId);
+    List<Object[]> findLimAndTransList(Long accountId);
 }

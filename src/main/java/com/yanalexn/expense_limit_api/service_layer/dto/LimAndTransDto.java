@@ -1,11 +1,7 @@
-package com.yanalexn.expense_limit_api.service.dto;
+package com.yanalexn.expense_limit_api.service_layer.dto;
 
-import com.yanalexn.expense_limit_api.entity.ExpenseLimit;
-import com.yanalexn.expense_limit_api.entity.Transaction;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Data
 @Builder

@@ -1,12 +1,10 @@
-package com.yanalexn.expense_limit_api.resolver;
+package com.yanalexn.expense_limit_api.web_layer.resolver;
 
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
-import com.yanalexn.expense_limit_api.entity.Transaction;
-import com.yanalexn.expense_limit_api.repository.TransactionRepository;
+import com.yanalexn.expense_limit_api.data_layer.entity.Transaction;
+import com.yanalexn.expense_limit_api.data_layer.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class TransactionQuery implements GraphQLQueryResolver {

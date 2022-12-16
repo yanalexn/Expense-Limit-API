@@ -1,30 +1,27 @@
 package com.yanalexn.expense_limit_api;
 
-import com.yanalexn.expense_limit_api.entity.Account;
-import com.yanalexn.expense_limit_api.entity.ExpenseLimit;
-import com.yanalexn.expense_limit_api.entity.Transaction;
-import com.yanalexn.expense_limit_api.repository.AccountRepository;
-import com.yanalexn.expense_limit_api.repository.ExpenseLimitRepository;
-import com.yanalexn.expense_limit_api.repository.TransactionRepository;
-import com.yanalexn.expense_limit_api.service.OffsetDateTimeConverter;
-import com.yanalexn.expense_limit_api.service.TransactionService;
+import com.yanalexn.expense_limit_api.data_layer.entity.Account;
+import com.yanalexn.expense_limit_api.data_layer.entity.ExpenseLimit;
+import com.yanalexn.expense_limit_api.data_layer.entity.Transaction;
+import com.yanalexn.expense_limit_api.data_layer.repository.AccountRepository;
+import com.yanalexn.expense_limit_api.data_layer.repository.ExpenseLimitRepository;
+import com.yanalexn.expense_limit_api.data_layer.repository.TransactionRepository;
+import com.yanalexn.expense_limit_api.service_layer.converter.OffsetDateTimeConverter;
+import com.yanalexn.expense_limit_api.service_layer.TransactionService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 //@SpringBootTest
-@ComponentScan("com.yanalexn.expense_limit_api.service")
+@ComponentScan("com.yanalexn.expense_limit_api.service_layer")
 @DataJpaTest
 public class TransactionRepoTest {
 

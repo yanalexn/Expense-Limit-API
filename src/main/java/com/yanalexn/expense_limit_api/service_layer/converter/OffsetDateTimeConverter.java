@@ -1,4 +1,4 @@
-package com.yanalexn.expense_limit_api.service;
+package com.yanalexn.expense_limit_api.service_layer.converter;
 
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;

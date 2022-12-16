@@ -1,4 +1,4 @@
-package com.yanalexn.expense_limit_api.entity;
+package com.yanalexn.expense_limit_api.data_layer.entity;
 
 import javax.persistence.*;
 
